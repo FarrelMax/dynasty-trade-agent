@@ -18,12 +18,13 @@ CREATE TABLE nfl_team(
 
 CREATE TABLE players(
     player_id SERIAL PRIMARY KEY,
+    gsis_id VARCHAR(50) UNIQUE,
     player_name VARCHAR(255) NOT NULL,
     position VARCHAR(50) NOT NULL,
     nfl_team_id INT NOT NULL REFERENCES nfl_team(nfl_team_id),
-    player_height INT NOT NULL,
-    player_weight INT NOT NULL,
-    date_of_birth DATE NOT NULL,
+    player_height INT,
+    player_weight INT,
+    date_of_birth DATE,
     draft_year INT
 );
 
