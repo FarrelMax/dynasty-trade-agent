@@ -15,3 +15,20 @@ conn = psycopg2.connect(
     password="dynasty_pass"
 )
 
+cur = conn.cursor()
+
+teams = nfl.import_team_desc()
+
+for _,row in teams.iterrows():
+    cur.execute("""
+        INSERT INTO nfl_team(nfl_team_name, nfl_team_abb)
+        VALUES (%s, %s)
+        ON CONFLICT (nfl_team_abb) DO UPDATE
+        SET nfl_team_name = EXCLUDED.nfl_team_name
+        """, (row['team_name'], row['team_abbr']))
+    
+conn.commit()
+cur.close()
+conn.close()
+print("Teams ingested successfully")
+
