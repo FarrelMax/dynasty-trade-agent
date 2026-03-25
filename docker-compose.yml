@@ -1,0 +1,15 @@
+services:
+    db:
+        image: postgres:16
+        container_name: dynasty_db
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: dynasty_user
+            POSTGRES_PASSWORD: dynasty_pass
+            POSTGRES_DB: dynasty_football
+        ports:
+            - "5432:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql/data 
+volumes:
+    pgdata:
