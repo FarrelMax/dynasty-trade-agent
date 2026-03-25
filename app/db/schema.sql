@@ -36,6 +36,7 @@ CREATE TABLE fantasy_teams(
 
 CREATE TABLE nfl_games(
     game_id SERIAL PRIMARY KEY,
+    nflverse_game_id VARCHAR(50) UNIQUE,
     season INT NOT NULL,
     game_week INT NOT NULL,
     home_team_id INT NOT NULL REFERENCES nfl_team(nfl_team_id),
@@ -55,7 +56,8 @@ CREATE TABLE player_game_stats(
     rushing_yards INT DEFAULT 0,
     rushing_touchdowns INT DEFAULT 0,
     receiving_yards INT DEFAULT 0,
-    receiving_touchdowns INT DEFAULT 0
+    receiving_touchdowns INT DEFAULT 0,
+    UNIQUE (player_id, game_id)
 );
 
 CREATE TABLE roster_slots(
