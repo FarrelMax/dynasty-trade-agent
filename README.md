@@ -55,6 +55,7 @@ Start the API:
 
 Bash
 uvicorn app.main:app --reload
+
 Roadmap
 [x] Database Schema Design & Normalization
 
