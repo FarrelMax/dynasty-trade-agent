@@ -74,6 +74,8 @@ CREATE TABLE player_value_history(
     player_id INT NOT NULL REFERENCES players(player_id),
     valuation_date DATE NOT NULL,
     fantasy_value INT NOT NULL
+    UNIQUE (player_id, valuation_date)
+
 );
 
 CREATE INDEX idx_player_value_history ON player_value_history(player_id, valuation_date);
