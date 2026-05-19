@@ -3,15 +3,17 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 import nfl_data_py as nfl
 import psycopg2
+import os
+from dotenv import load_dotenv
+load_dotenv() 
 
 conn = psycopg2.connect(
-    host="localhost",
-    port=5432,
-    dbname="dynasty_football",
-    user="dynasty_user",
-    password="dynasty_pass"
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT"),
+    dbname=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD")
 )
-
 cur = conn.cursor()
 weekly = nfl.import_weekly_data([2022, 2023, 2024])
 

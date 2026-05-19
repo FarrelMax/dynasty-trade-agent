@@ -1,0 +1,11 @@
+fastapi>=0.115.0
+pydantic==2.13.4
+python-dotenv==1.2.1
+psycopg2-binary==2.9.12
+pandas
+nfl_data_py==0.3.3
+langchain==0.3.30
+langchain-core==0.3.86
+langchain-anthropic==0.3.22
+anthropic==0.101.0
+uvicorn==0.39.0
