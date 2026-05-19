@@ -10,15 +10,13 @@ load_dotenv()
 
 def get_db():
     conn = psycopg2.connect(
-        host="localhost",
-        port=5432,
-        dbname="dynasty_football",
-        user="dynasty_user",
-        password="dynasty_pass"
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT"),
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD")
     )
     return conn
-
-# --- TOOLS ---
 
 @tool
 def get_player_value(player_name: str) -> str:
@@ -201,7 +199,12 @@ agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
 def evaluate_trade_with_agent(query: str) -> str:
     result = agent_executor.invoke({"input": query})
-    return result["output"]
+    output = result["output"]
+    
+    # Handle if output is a list of content blocks
+    if isinstance(output, list):
+        return " ".join(block["text"] for block in output if block.get("type") == "text")
+    return output
 
 # Test it directly
 if __name__ == "__main__":

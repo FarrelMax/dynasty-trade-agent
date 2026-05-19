@@ -73,7 +73,7 @@ CREATE TABLE player_value_history(
     value_id SERIAL PRIMARY KEY,
     player_id INT NOT NULL REFERENCES players(player_id),
     valuation_date DATE NOT NULL,
-    fantasy_value INT NOT NULL
+    fantasy_value INT NOT NULL,
     UNIQUE (player_id, valuation_date)
 
 );
