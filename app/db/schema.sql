@@ -11,7 +11,7 @@ CREATE TABLE league(
 CREATE TABLE nfl_team(
     nfl_team_id SERIAL PRIMARY KEY,
     nfl_team_name VARCHAR(255) NOT NULL,
-    nfl_team_abb VARCHAR(10) NOT NULL,
+    nfl_team_abb VARCHAR(10) NOT NULL UNIQUE, 
     coach_name VARCHAR(255),
     offensive_scheme VARCHAR(255)
 );

@@ -1,6 +1,4 @@
-#1. Connect to the database
-#2. Pull player data from nflverse
-#3. Insert each player into the players table
+
 import pandas as pd
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -10,13 +8,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()  
 
-conn = psycopg2.connect(
-    host=os.getenv("DB_HOST"),
-    port=os.getenv("DB_PORT"),
-    dbname=os.getenv("DB_NAME"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD")
-)
+conn = psycopg2.connect(os.getenv("DATABASE_URL"))
 """
 CREATE TABLE players(
     player_id SERIAL PRIMARY KEY,
@@ -33,7 +25,17 @@ CREATE TABLE players(
 cur = conn.cursor()
 players = nfl.import_players()
 
-for _, row in players.iterrows():
+players = players[
+    (players['status'].isin(['ACT', 'RES', 'PUP'])) &
+    (players['position'].isin(['QB', 'RB', 'WR', 'TE'])) &
+    (players['draft_year'] >= 2015)
+]
+
+
+
+print(f"Filtered to {len(players)} relevant players")
+total = len(players)
+for i, (_, row) in enumerate(players.iterrows()):
     if pd.isna(row['latest_team']):
         continue
 
@@ -42,14 +44,22 @@ for _, row in players.iterrows():
     birth_date = None if pd.isna(row['birth_date']) else row['birth_date']
     draft_year = None if pd.isna(row['draft_year']) else int(row['draft_year'])
 
+    cur.execute("SELECT nfl_team_id FROM nfl_team WHERE nfl_team_abb = %s", (row['latest_team'],))
+    team = cur.fetchone()
+    if team is None:
+        continue
+
     cur.execute("""
         INSERT INTO players (player_name, gsis_id, position, nfl_team_id, player_height, player_weight, date_of_birth, draft_year)
-        VALUES (%s, %s, %s, (SELECT nfl_team_id FROM nfl_team WHERE nfl_team_abb = %s), %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT (gsis_id) DO UPDATE
         SET position = EXCLUDED.position,
             nfl_team_id = EXCLUDED.nfl_team_id
-    """, (row['display_name'], row['gsis_id'], row['position'], row['latest_team'], height, weight, birth_date, draft_year))
+    """, (row['display_name'], row['gsis_id'], row['position'], team[0], height, weight, birth_date, draft_year))
 
+    if i % 100 == 0:
+        conn.commit() 
+        print(f"Progress: {i}/{total} players processed")
 conn.commit()
 cur.close()
 conn.close()
