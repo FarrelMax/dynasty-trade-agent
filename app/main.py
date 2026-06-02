@@ -14,7 +14,11 @@ app = FastAPI(title="Dynasty Trade Agent API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://dynasty-iq.vercel.app",  
+        os.getenv("FRONTEND_URL", ""),    
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
