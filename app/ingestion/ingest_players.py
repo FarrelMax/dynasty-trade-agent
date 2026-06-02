@@ -26,10 +26,16 @@ cur = conn.cursor()
 players = nfl.import_players()
 
 players = players[
-    (players['status'].isin(['ACT', 'RES', 'PUP'])) &
+    (players['status'].isin(['ACT', 'RES', 'PUP', 'UFA', 'RFA'])) &
     (players['position'].isin(['QB', 'RB', 'WR', 'TE'])) &
-    (players['draft_year'] >= 2015)
+    ((players['draft_year'] >= 2012) | (players['draft_year'].isna()))
 ]
+
+team_abb_fixes = {
+    'AZ': 'ARI',
+    'LA': 'LAR',  
+}
+
 
 
 
@@ -44,7 +50,10 @@ for i, (_, row) in enumerate(players.iterrows()):
     birth_date = None if pd.isna(row['birth_date']) else row['birth_date']
     draft_year = None if pd.isna(row['draft_year']) else int(row['draft_year'])
 
-    cur.execute("SELECT nfl_team_id FROM nfl_team WHERE nfl_team_abb = %s", (row['latest_team'],))
+    team_abb = row['latest_team']
+    team_abb = team_abb_fixes.get(team_abb, team_abb)
+
+    cur.execute("SELECT nfl_team_id FROM nfl_team WHERE nfl_team_abb = %s", (team_abb,))
     team = cur.fetchone()
     if team is None:
         continue
