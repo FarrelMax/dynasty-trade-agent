@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
-const API = 'http://localhost:8000'
+const API = ${import.meta.env.VITE_API_URL}
+
 
 export default function PlayerSearch() {
   const [query, setQuery] = useState('')
