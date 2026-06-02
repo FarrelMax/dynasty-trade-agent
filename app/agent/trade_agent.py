@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 import psycopg2
 import psycopg2.extras
 from langchain_anthropic import ChatAnthropic
-from langchain.agents import tool, AgentExecutor, create_tool_calling_agent
+from langchain.agents import AgentExecutor, create_tool_calling_agent
+from langchain.tools import tool
 from langchain_core.prompts import ChatPromptTemplate
 
 load_dotenv()
