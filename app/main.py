@@ -16,13 +16,12 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://dynasty-iq.vercel.app",  
-        os.getenv("FRONTEND_URL", ""),    
+        "https://dynasty-trade-agent-k1djrzbfx-farrel-s-projects4.vercel.app",
+        "https://*.vercel.app", 
     ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 def get_db():
     conn = psycopg2.connect(os.getenv("DATABASE_URL"))
     try:
