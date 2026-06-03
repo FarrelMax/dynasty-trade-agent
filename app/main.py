@@ -14,13 +14,9 @@ app = FastAPI(title="Dynasty Trade Agent API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "https://dynasty-trade-agent-k1djrzbfx-farrel-s-projects4.vercel.app",
-        "https://*.vercel.app", 
-    ],
+    allow_origins=["*"],
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"], #probably want to lock this down in production
 )
 def get_db():
     conn = psycopg2.connect(os.getenv("DATABASE_URL"))
