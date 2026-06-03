@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
-const API = ${import.meta.env.VITE_API_URL}
+const API = import.meta.env.VITE_API_URL
 
 
 export default function PlayerSearch() {

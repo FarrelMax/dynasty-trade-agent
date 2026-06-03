@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 
-const API = ${import.meta.env.VITE_API_URL}
+const API = import.meta.env.VITE_API_URL
 
 
 function PlayerPanel({ title, players, onAdd, onRemove, accentColor }) {
