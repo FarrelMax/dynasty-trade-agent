@@ -39,7 +39,7 @@ export default function PlayerSearch() {
     setHistory(null)
     try {
       const [statsRes, historyRes] = await Promise.all([
-        fetch(`${API}/players/${encodeURIComponent(player.player_name)}/stats?season=2024`),
+        fetch(`${API}/players/${encodeURIComponent(player.player_name)}/stats`),
         fetch(`${API}/players/${encodeURIComponent(player.player_name)}/value-history`)
       ])
       if (statsRes.ok) setStats(await statsRes.json())
@@ -157,7 +157,7 @@ export default function PlayerSearch() {
             {totalStats && (
               <div className="card">
                 <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
-                  2024 Season Stats
+                  {stats.season} Season Stats
                 </div>
                 {selected.position === 'QB' ? (
                   <>

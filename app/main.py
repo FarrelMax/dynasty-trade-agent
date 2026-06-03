@@ -98,8 +98,20 @@ def get_player_value(player_name: str, conn=Depends(get_db)):
 
 
 @app.get("/players/{player_name}/stats")
-def get_player_stats(player_name: str, season: int = 2024, conn=Depends(get_db)):
+def get_player_stats(player_name: str, season: int = None, conn=Depends(get_db)):
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    
+    if season is None:
+        cur.execute("""
+            SELECT MAX(g.season) FROM player_game_stats s
+            JOIN players p ON s.player_id = p.player_id
+            JOIN nfl_games g ON s.game_id = g.game_id
+            WHERE p.player_name ILIKE %s
+        """, (f"%{player_name}%",))
+        season = cur.fetchone()["max"]
+        if season is None:
+            raise HTTPException(status_code=404, detail="No stats found")
+    
     cur.execute("""
         SELECT p.player_name, g.season, g.game_week,
                s.passing_yards, s.passing_touchdowns,
@@ -116,8 +128,6 @@ def get_player_stats(player_name: str, season: int = 2024, conn=Depends(get_db))
     if not stats:
         raise HTTPException(status_code=404, detail="No stats found")
     return {"player": player_name, "season": season, "games": stats}
-
-
 
 class TradeRequest(BaseModel):
     team_a_gives: List[str]
